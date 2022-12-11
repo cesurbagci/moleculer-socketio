@@ -1,6 +1,6 @@
 {
   "name": "moleculer-socketio",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Mixin for Node-socketio",
   "main": "index.js",
   "scripts": {
@@ -49,6 +49,6 @@
   },
   "dependencies": {
     "express": "^4.16.3",
-    "socket.io": "^2.1.0"
+    "socket.io": "^4.5.1"
   }
 }
