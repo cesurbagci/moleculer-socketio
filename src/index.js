@@ -2,13 +2,13 @@
  * moleculer-socketio
  */
 
- "use strict";
+"use strict";
 
 const express = require("express");
 const Promise = require("bluebird");
 const mapKeys = require("lodash/mapKeys");
 const { ValidationError } = require("moleculer").Errors;
-
+const _ = require("lodash")
 
 /**
 *  Mixin service for socketio
@@ -213,8 +213,9 @@ module.exports = {
 
 				const broker = svc.broker;
 
-				const newContext = Object.assign(svc.broker, {
-					params: data,
+        const newContext = _.cloneDeep({params: data});
+        Object.assign(newContext, {
+          ...svc.broker,
 					socket: socket,
 					event: event
 				});
@@ -227,12 +228,11 @@ module.exports = {
 				)
 				.then(
 					() => Promise.all(
-						event.sequence.map((i) => i.bind(this)(newContext))
-						// event.sequence.map((i) => i.call(this, newContext))
-					)
+              event.sequence.map((i) => i.bind(this)(newContext))
+              // event.sequence.map((i) => i.call(this, newContext))
+          )
 				)
 				.then((obj) => {
-					console.log("result", obj);
 					const payload = obj.filter((o) => o != undefined || o != null);
 					if (!emit) {
 						return;
@@ -304,7 +304,7 @@ module.exports = {
 				this.logger.info(`### ${key} - event - connection`);
 
 				this.hash_events[`${key}.${event_connection.name}`](client_socket);
-				client_socket.on("disconnect", this.hash_events[`${key}.${event_disconnect.name}`].bind(this, client_socket));
+				client_socket.on("disconnect", this.hash_events[`${key}.${event_disconnect.name}`]);
 
 				events.map((event) => {
 					// this.logger.info(`${key} - ${event.name} - subscribed`, this.hash_events[`${key}.${event.name}`]);
